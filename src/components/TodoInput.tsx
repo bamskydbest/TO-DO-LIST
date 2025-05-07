@@ -6,21 +6,26 @@ interface Props {
 const TodoInput = ({ onAdd }: Props): React.JSX.Element => {
   const [text, setText] = useState("");
 
-  const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && text.trim()) {
-      onAdd(text.trim());
-      setText("");
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const trimmed = text.trim();
+      if (trimmed) {
+        onAdd(trimmed);
+        setText("");
+      }
     }
   };
+
   return (
     <div>
       <input
         type="text"
-        className="w-full md:w-3/4 lg:w-2/3 px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring"
+        className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring"
         placeholder="What do you want to do today?"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        onKeyDown={handleKey}
+        onKeyDown={handleKeyDown}
       />
     </div>
   );

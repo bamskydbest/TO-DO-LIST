@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { v4 as uuidv4 } from "uuid";
 import TodoInput from "./components/TodoInput";
@@ -11,7 +11,14 @@ interface Todo {
 }
 
 function App(): React.JSX.Element {
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [todos, setTodos] = useState<Todo[]>(() => {
+    const stored = localStorage.getItem("todos");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   const addTodo = (text: string): void => {
     const newTodo: Todo = { id: uuidv4(), text, completed: false };
@@ -37,7 +44,7 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-800">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-800">
       <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 w-full max-w-md">
         <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
           Things To Do!
